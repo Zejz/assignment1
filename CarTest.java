@@ -188,6 +188,59 @@ public class CarTest {
                 close(saab.getX(), 0) && close(saab.getY(), 0));
     }
 
+    private static void testGasZeroToOne() {
+        Volvo240 volvo = new Volvo240();
+        Volvo240 volvo2 = new Volvo240();
+        volvo.startEngine();
+        volvo2.startEngine();
+        volvo.gas(-2);
+        volvo2.gas(2);
+        reportResult("Gas can not exceed 1 or be smaller than 0", volvo.getCurrentSpeed() == 0.1 && volvo2.getCurrentSpeed() == 0.1);
+    }
+
+    private static void testBrakeZeroToOne() {
+        Volvo240 volvo = new Volvo240();
+        Volvo240 volvo2 = new Volvo240();
+        volvo.startEngine();
+        volvo2.startEngine();
+        volvo.gas(1);
+        volvo2.gas(1);
+        double before = volvo.getCurrentSpeed();
+        double before2 = volvo2.getCurrentSpeed();
+        volvo.brake(2);
+        volvo2.brake(-2);
+        reportResult("Break can not exceed 1 or be smaller than 0", volvo.getCurrentSpeed()==before && volvo2.getCurrentSpeed()==before2);
+
+    }
+
+    private static void testCurrentSpeedInterval() {
+        Volvo240 volvo = new Volvo240();
+        Volvo240 volvo2 = new Volvo240();
+        volvo.startEngine();
+        volvo2.startEngine();
+        for (int i = 0; i <100; i++){
+            volvo.gas(1);
+            volvo2.brake(1);
+        }
+        reportResult("CurrenSpeed is always in the interval 0 to enginePower", volvo.getCurrentSpeed() == 100 && volvo2.getCurrentSpeed() == 0);
+    }
+
+    private static void testGasIncreasesNegSpeed() {
+        Volvo240 volvo = new Volvo240();
+        volvo.startEngine();
+        double before = volvo.getCurrentSpeed();
+        volvo.gas(-0.3);
+        reportResult("gas can not decrease speed", volvo.getCurrentSpeed() == before);
+    }
+
+    private static void testBrakeDecreasesNegSpeed() {
+        Saab95 saab = new Saab95();
+        saab.gas(1);
+        double before = saab.getCurrentSpeed();
+        saab.brake(-0.2);
+        reportResult("brake can not increase speed", saab.getCurrentSpeed() == before);
+    }
+
     public static void main(String[] args) {
         testInitialState();
         testCarSpecs();
@@ -208,5 +261,10 @@ public class CarTest {
         testFourTurnsFullCircle();
         testLeftThenRightCancels();
         testSquarePath();
+        testGasZeroToOne();
+        testBrakeZeroToOne();
+        testCurrentSpeedInterval();
+        testGasIncreasesNegSpeed();
+        testBrakeDecreasesNegSpeed();
     }
 }
