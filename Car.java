@@ -1,24 +1,28 @@
-import java.awt.*;
+import java.awt.Color;
 
-public abstract class Car {
+public abstract class Car implements Movable {
+    private final int nrDoors;
+    private final double enginePower;
+    private double currentSpeed;
+    private Color color;
+    private final String modelName;
 
-	private final int nrDoors; // Number of doors on the car
-    private final double enginePower; // Engine power of the car
-    private double currentSpeed; // The current speed of the car
-    private Color color; // Color of the car
-    private final String modelName; // The car model name
+    private double x;
+    private double y;
+    private int direction;
 
-	public Car(int nrDoors, double enginePower, Color color, String modelName) {
-		this.nrDoors = nrDoors;
-		this.enginePower = enginePower;
-		this.color = color;
-		this.modelName = modelName;
-		stopEngine();
-	}
+    public Car(int nrDoors, double enginePower, Color color, String modelName) {
+        this.nrDoors = nrDoors;
+        this.enginePower = enginePower;
+        this.color = color;
+        this.modelName = modelName;
+        stopEngine();
+    }
 
-	public int getNrDoors() {
+    public int getNrDoors() {
         return nrDoors;
     }
+
     public double getEnginePower() {
         return enginePower;
     }
@@ -31,8 +35,20 @@ public abstract class Car {
         return color;
     }
 
-    public void setColor(Color clr) {
-        color = clr;
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public int getDirection() {
+        return direction;
     }
 
     public void startEngine() {
@@ -43,23 +59,41 @@ public abstract class Car {
         currentSpeed = 0;
     }
 
-	protected abstract double speedFactor();
+    protected abstract double speedFactor();
 
-	protected void incrementSpeed(double amount) {
-		currentSpeed = getCurrentSpeed() + speedFactor() * amount;
-	}
+    protected void incrementSpeed(double amount) {
+        currentSpeed += speedFactor() * amount;
+    }
 
-	protected void decrementSpeed(double amount) {
-		currentSpeed = getCurrentSpeed() - speedFactor() * amount;
-	}
+    protected void decrementSpeed(double amount) {
+        currentSpeed -= speedFactor() * amount;
+    }
 
-	// TODO fix this method according to assignment pm
-	public void gas(double amount) {
-		incrementSpeed(amount);
-	}
+    public void gas(double amount) {
+        incrementSpeed(amount);
+    }
 
-	// TODO fix this method according to assignment pm
-	public void brake(double amount) {
-		decrementSpeed(amount);
-	}
+    public void brake(double amount) {
+        decrementSpeed(amount);
+    }
+
+    @Override
+    public void move() {
+        switch (direction) {
+            case 0 -> x += currentSpeed;
+            case 90 -> y += currentSpeed;
+            case 180 -> x -= currentSpeed;
+            case 270 -> y -= currentSpeed;
+        }
+    }
+
+    @Override
+    public void turnLeft() {
+        direction = (direction + 90) % 360;
+    }
+
+    @Override
+    public void turnRight() {
+        direction = (direction + 270) % 360;
+    }
 }
