@@ -77,23 +77,32 @@ public abstract class Car implements Movable {
         decrementSpeed(amount);
     }
 
-    @Override
-    public void move() {
+    @Override 
+    public void move(){
         switch (direction) {
             case 0 -> x += currentSpeed;
             case 90 -> y += currentSpeed;
             case 180 -> x -= currentSpeed;
             case 270 -> y -= currentSpeed;
+            default -> {
+                x += Math.cos(Math.toRadians(direction)) * currentSpeed;
+                y += Math.sin(Math.toRadians(direction)) * currentSpeed;
+            }}}
+
+    @Override 
+    public void turnLeft(){
+        direction += 90;
+        if (direction >= 360) {
+            direction -= 360;
+        }
+    } 
+    
+    @Override
+    public void turnRight(){
+        direction -= 90;
+        if (direction < 0) {
+            direction += 360;
         }
     }
-
-    @Override
-    public void turnLeft() {
-        direction = (direction + 90) % 360;
-    }
-
-    @Override
-    public void turnRight() {
-        direction = (direction + 270) % 360;
-    }
+    
 }
